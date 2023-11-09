@@ -5,10 +5,26 @@ const passwordInput = document.querySelector("#password");
 const confirmPasswordInput = document.querySelector("#confirmPassword");
 
 form.addEventListener("submit", (event) => {
-    event.preventDefault();
-
+    
     validateForm();
-})
+    
+    if(isFormValid()==true){
+        form.submit();
+    }else{
+        event.preventDefault();
+    }
+});
+
+function isFormValid(){
+    const inputContainers = form.querySelectorAll(".input-group");
+    let result = true;
+    inputContainers.forEach((container)=> {
+        if(container.classList.contains("error")){
+            result=false;
+        }
+    });
+    return result;
+}
 
 function validateForm(){
     //USERNAME
@@ -20,8 +36,29 @@ function validateForm(){
         setSuccess(usernameInput);
     }
     //EMAIL
+    if(emailInput.value.trim() == ""){
+        setError(emailInput, "Provide Email address");
+    }else if(isEmailValid(emailInput.value)){
+        setSuccess(emailInput);
+    }else{
+        setError(emailInput, "Provide valid email address");
+    }
     //PASSWORD
+    if(passwordInput.value.trim() ==""){
+        setError(passwordInput, "Pawword must not be empty")
+    }else if(passwordInput.value.trim().length <6 || passwordInput.value.trim().length >20){
+        setError(passwordInput, "Password min 6 and max 20 characters");
+    }else{
+        setSuccess(passwordInput);
+    }
     //CONFIRM PASSWORD
+    if(confirmPasswordInput.value.trim() ==""){
+        setError(confirmPasswordInput, "Password can not be empty");
+    } else if(confirmPasswordInput.value !== passwordInput.value){
+        setError(confirmPasswordInput, "Password does not match")
+    }else{
+        setSuccess(confirmPasswordInput);
+    }
 }
 
 function setError(element, errorMessage) {
@@ -41,4 +78,12 @@ function setSuccess(element){
     }
     parent.classList.add("success")
 }
+
+function isEmailValid(email){
+    const reg = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    return reg.test(email);
+}
+
+
+
 
